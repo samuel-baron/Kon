@@ -1,4 +1,4 @@
-<img src="./images/kon-logo.png" alt=">_Kon! Logo" style="width:200px; height:200px; display: block; margin-left: auto; margin-right: auto;">
+<img src="https://github.com/samuel-baron/Kon/blob/main/images/kon-logo.png" alt=">_Kon! Logo" style="width:200px; height:200px; display: block; margin-left: auto; margin-right: auto;">
 
 # >_Kon!
 ### A web framework for working with dynamic components!

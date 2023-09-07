@@ -4,7 +4,8 @@
   "description": ">_Kon! is a web framework for working with dynamic components",
   "main": "kon.js",
   "scripts": {
-    "test": "nodemon --exec ts-node src/test/test.ts --ext ts,js,html"
+    "test": "nodemon --exec ts-node src/test/test.ts --ext ts,js,html",
+	 "finish": "git commit -am \"finishing up\" && git push origin master && npm publish"
   },
   "keywords": [
     "web",
