@@ -27,6 +27,7 @@ const path = require("path");
 const fs = require("fs");
 /* --------------------------------------- Debug --------------------------------------- */
 const debugMode = false;
+const importPath = require.main.filename.split('\\').slice(0, -1).join('\\');
 /* --------------------------------------- Classe Kon --------------------------------------- */
 class Kon {
     constructor(app, options) {
@@ -69,7 +70,7 @@ class Kon {
                 }
             }
         };
-        const konponentsFolder = path.join(__dirname, this.options.folderName);
+        const konponentsFolder = path.join(importPath, this.options.folderName);
         recursiveSearch(konponentsFolder);
         return konponents;
     }
@@ -78,7 +79,7 @@ class Kon {
         if (debugMode) {
             console.log('Initializing routes');
         }
-        const konponentsFolder = `${__dirname}/${this.options.folderName}`;
+        const konponentsFolder = `${importPath}/${this.options.folderName}`;
         const konponentsFiles = fs.readdirSync(konponentsFolder);
         for (const konponentFile of konponentsFiles) {
             if (konponentFile.endsWith('.html')) {
@@ -128,15 +129,6 @@ class Kon {
                 }
             }
         }
-        this.app.listen(3000, () => {
-            if (debugMode) {
-                console.log(JSON.stringify(this, null, 2).replace(/\\n/g, '\n').replace(/\\t/g, '\t'));
-                console.log('Servidor rodando em http://localhost:3000');
-            }
-            else {
-                console.log('Iniciado.');
-            }
-        });
     }
 }
 /* --------------------------------------- Classe Konponent --------------------------------------- */
@@ -153,3 +145,4 @@ function CreateKon(app, options = { folderName: '', indexName: '' }) {
     return new Kon(app, options);
 }
 exports.default = CreateKon;
+module.exports = CreateKon;

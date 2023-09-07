@@ -26,15 +26,12 @@ konfig.konponents.index.addChild(konponent);
 import { Express } from 'express';
 import * as path from 'path';
 import * as fs from 'fs';
-
 /* --------------------------------------- Debug --------------------------------------- */
 const debugMode = false;
-const importPath = require.main.path;
-
+const importPath = require.main.filename.split('\\').slice(0, -1).join('\\');
 /* --------------------------------------- Tipos --------------------------------------- */
 type Konponents = { [key: string]: Konponent };
 type Options = { folderName: string, indexName?: string };
-
 /* --------------------------------------- Classe Kon --------------------------------------- */
 class Kon {
 	app: Express;
@@ -149,12 +146,11 @@ class Kon {
 		}
 	}
 }
-
 /* --------------------------------------- Classe Konponent --------------------------------------- */
 class Konponent {
 	private app: Express;
-	private name: string;
 
+	name: string;
 	content: string;
 	children: Konponents = {};
 
@@ -164,10 +160,7 @@ class Konponent {
 		this.content = content;
 	}
 }
-
 /* --------------------------------------- Export --------------------------------------- */
-export default function CreateKon(app: Express, options: Options = { folderName: '', indexName: '' }): Kon {
+export default function konponent(app, options = { folderName: '', indexName: '' }) {
 	return new Kon(app, options);
 }
-
-exports.default = CreateKon;
