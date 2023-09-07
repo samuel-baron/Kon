@@ -5,7 +5,7 @@
 
 ## What is >_Kon!?
 
->\>_Kon! is a web framework that allows you to create dynamic components that can be used in any web application.
+\>_Kon! is a web framework that allows you to create dynamic components that can be used in any web application.
 
 ## How do I use >_Kon!?
 
