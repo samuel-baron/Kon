@@ -169,3 +169,5 @@ class Konponent {
 export default function CreateKon(app: Express, options: Options = { folderName: '', indexName: '' }): Kon {
 	return new Kon(app, options);
 }
+
+exports.default = CreateKon;
