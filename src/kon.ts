@@ -93,7 +93,7 @@ class Kon {
 
 		if (debugMode) { console.log('Initializing routes'); }
 
-		const recursiveSearch = (folderPath: string, routePrefix: string = '') => {
+		const recursiveSearch = (folderPath: string, routePrefix: string = ''): void => {
 			const files = fs.readdirSync(folderPath);
 
 			for (const file of files) {
@@ -104,12 +104,22 @@ class Kon {
 					recursiveSearch(filePath, routePrefix + file + '/');
 				} else if (file.endsWith('.html') && !file.endsWith('.kon.html')) {
 					const routeName = routePrefix + file.replace('.html', '');
+
+					// Check if the file name (without extension) matches the last folder name
+					const lastFolderName = folderPath.split(path.sep).pop() || '';
+					const fileNameWithoutExtension = file.replace('.html', '');
+					let finalRoute: string;
+					if (lastFolderName === fileNameWithoutExtension) {
+						finalRoute = `/${routePrefix.slice(0, -1)}`;
+					} else {
+						finalRoute = `/${routePrefix}${fileNameWithoutExtension}`;
+					}
+
 					const routeContent = fs.readFileSync(filePath, 'utf8');
 					routes[routeName] = this.createKonponent(routeName, routeContent);
 
 					if (debugMode) { console.log(`Route: ${routeName}`); }
 
-					const finalRoute = routePrefix ? `/${routeName}` : '/';
 					this.app.get(finalRoute, (req, res) => {
 						res.send(routes[routeName].content);
 					});
