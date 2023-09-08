@@ -175,8 +175,8 @@ class Konponent {
 	}
 }
 /* --------------------------------------- Export --------------------------------------- */
-export default function konponent(app, options = { folderName: '', indexName: '' }) {
+function konponent(app, options = { folderName: '', indexName: '' }) {
 	return new Kon(app, options);
 }
 
-exports.default = konponent;
+export = konponent;

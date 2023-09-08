@@ -45,7 +45,6 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
-Object.defineProperty(exports, "__esModule", { value: true });
 const path = __importStar(require("path"));
 const fs = __importStar(require("fs"));
 /* --------------------------------------- Debug --------------------------------------- */
@@ -178,5 +177,4 @@ class Konponent {
 function konponent(app, options = { folderName: '', indexName: '' }) {
     return new Kon(app, options);
 }
-exports.default = konponent;
-exports.default = konponent;
+module.exports = konponent;

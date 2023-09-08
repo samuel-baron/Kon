@@ -25,8 +25,8 @@ declare class Konponent {
     children: Konponents;
     constructor(app: Express, name: string, content: string);
 }
-export default function konponent(app: any, options?: {
+declare function konponent(app: any, options?: {
     folderName: string;
     indexName: string;
 }): Kon;
-export {};
+export = konponent;
