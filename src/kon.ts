@@ -93,28 +93,32 @@ class Kon {
 
 		if (debugMode) { console.log('Initializing routes'); }
 
-		const konponentsFolder = `${importPath}/${this.options.folderName}`;
-		const konponentsFiles = fs.readdirSync(konponentsFolder);
+		const recursiveSearch = (folderPath: string, routePrefix: string = '') => {
+			const files = fs.readdirSync(folderPath);
 
-		for (const konponentFile of konponentsFiles) {
-			if (konponentFile.endsWith('.html')) {
-				const routeName = konponentFile.replace('.html', '');
-				const routeContent = fs.readFileSync(`${konponentsFolder}/${konponentFile}`, 'utf8');
-				routes[routeName] = this.createKonponent(routeName, routeContent);
+			for (const file of files) {
+				const filePath = path.join(folderPath, file);
+				const stats = fs.statSync(filePath);
 
-				if (debugMode) { console.log(`Route: ${routeName}`); }
+				if (stats.isDirectory()) {
+					recursiveSearch(filePath, routePrefix + file + '/');
+				} else if (file.endsWith('.html') && !file.endsWith('.kon.html')) {
+					const routeName = routePrefix + file.replace('.html', '');
+					const routeContent = fs.readFileSync(filePath, 'utf8');
+					routes[routeName] = this.createKonponent(routeName, routeContent);
 
-				if (routeName === this.options.indexName) {
-					this.app.get('/', (req, res) => {
-						res.send(routes[routeName].content);
-					});
-				} else {
-					this.app.get(`/${routeName}`, (req, res) => {
+					if (debugMode) { console.log(`Route: ${routeName}`); }
+
+					const finalRoute = routePrefix ? `/${routeName}` : '/';
+					this.app.get(finalRoute, (req, res) => {
 						res.send(routes[routeName].content);
 					});
 				}
 			}
-		}
+		};
+
+		const konponentsFolder = path.join(importPath, this.options.folderName);
+		recursiveSearch(konponentsFolder);
 
 		return routes;
 	}
