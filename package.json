@@ -1,6 +1,6 @@
 {
   "name": "konponent",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": ">_Kon! is a web framework for working with dynamic components",
   "main": "./dist/kon.js",
   "scripts": {
