@@ -179,3 +179,4 @@ function konponent(app, options = { folderName: '', indexName: '' }) {
     return new Kon(app, options);
 }
 exports.default = konponent;
+exports.default = konponent;

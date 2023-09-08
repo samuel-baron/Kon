@@ -5,7 +5,8 @@
   "main": "./dist/kon.js",
   "scripts": {
     "test": "nodemon --exec ts-node src/test/test.ts --ext ts,js,html",
-	 "finish": "git commit -am \"finishing up\" && git push && npm publish"
+	 "compile": "tsc -p ./tsconfig.json",
+	 "finish": "npm run compile && git commit -am \"finishing up\" && git push && npm publish"
   },
   "keywords": [
     "web",
