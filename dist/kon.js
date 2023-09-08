@@ -22,9 +22,32 @@ konponent.content = `
 konfig.konponents.index.addChild(konponent);
 
 */
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const path = require("path");
-const fs = require("fs");
+const path = __importStar(require("path"));
+const fs = __importStar(require("fs"));
 /* --------------------------------------- Debug --------------------------------------- */
 const debugMode = false;
 const importPath = require.main.filename.split('\\').slice(0, -1).join('\\');
@@ -79,28 +102,39 @@ class Kon {
         if (debugMode) {
             console.log('Initializing routes');
         }
-        const konponentsFolder = `${importPath}/${this.options.folderName}`;
-        const konponentsFiles = fs.readdirSync(konponentsFolder);
-        for (const konponentFile of konponentsFiles) {
-            if (konponentFile.endsWith('.html')) {
-                const routeName = konponentFile.replace('.html', '');
-                const routeContent = fs.readFileSync(`${konponentsFolder}/${konponentFile}`, 'utf8');
-                routes[routeName] = this.createKonponent(routeName, routeContent);
-                if (debugMode) {
-                    console.log(`Route: ${routeName}`);
+        const recursiveSearch = (folderPath, routePrefix = '') => {
+            const files = fs.readdirSync(folderPath);
+            for (const file of files) {
+                const filePath = path.join(folderPath, file);
+                const stats = fs.statSync(filePath);
+                if (stats.isDirectory()) {
+                    recursiveSearch(filePath, routePrefix + file + '/');
                 }
-                if (routeName === this.options.indexName) {
-                    this.app.get('/', (req, res) => {
-                        res.send(routes[routeName].content);
-                    });
-                }
-                else {
-                    this.app.get(`/${routeName}`, (req, res) => {
+                else if (file.endsWith('.html') && !file.endsWith('.kon.html')) {
+                    const routeName = routePrefix + file.replace('.html', '');
+                    // Check if the file name (without extension) matches the last folder name
+                    const lastFolderName = folderPath.split(path.sep).pop() || '';
+                    const fileNameWithoutExtension = file.replace('.html', '');
+                    let finalRoute;
+                    if (lastFolderName === fileNameWithoutExtension) {
+                        finalRoute = `/${routePrefix.slice(0, -1)}`;
+                    }
+                    else {
+                        finalRoute = `/${routePrefix}${fileNameWithoutExtension}`;
+                    }
+                    const routeContent = fs.readFileSync(filePath, 'utf8');
+                    routes[routeName] = this.createKonponent(routeName, routeContent);
+                    if (debugMode) {
+                        console.log(`Route: ${routeName}`);
+                    }
+                    this.app.get(finalRoute, (req, res) => {
                         res.send(routes[routeName].content);
                     });
                 }
             }
-        }
+        };
+        const konponentsFolder = path.join(importPath, this.options.folderName);
+        recursiveSearch(konponentsFolder);
         return routes;
     }
     createKonponent(name, content = '') {
@@ -141,8 +175,7 @@ class Konponent {
     }
 }
 /* --------------------------------------- Export --------------------------------------- */
-function CreateKon(app, options = { folderName: '', indexName: '' }) {
+function konponent(app, options = { folderName: '', indexName: '' }) {
     return new Kon(app, options);
 }
-exports.default = CreateKon;
-module.exports = CreateKon;
+exports.default = konponent;
