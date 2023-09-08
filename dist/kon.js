@@ -126,9 +126,16 @@ class Kon {
                     if (debugMode) {
                         console.log(`Route: ${routeName}`);
                     }
-                    this.app.get(finalRoute, (req, res) => {
-                        res.send(routes[routeName].content);
-                    });
+                    if (routeName === this.options.indexName) {
+                        this.app.get('/', (req, res) => {
+                            res.send(routes[routeName].content);
+                        });
+                    }
+                    else {
+                        this.app.get(finalRoute, (req, res) => {
+                            res.send(routes[routeName].content);
+                        });
+                    }
                 }
             }
         };
@@ -148,9 +155,15 @@ class Kon {
         }
         while (Object.values(this.konponents).some(konp => />_([a-zA-Z0-9_-]+)/.test(konp.content))) {
             for (const konponentName in this.konponents) {
+                if (debugMode) {
+                    console.log(`Loading Konponent: ${konponentName}`);
+                }
                 const konp = this.konponents[konponentName];
                 const regex = new RegExp('>_([a-zA-Z0-9_-]+)', 'g');
                 konp.content = konp.content.replace(regex, (match, p1) => {
+                    if (debugMode) {
+                        console.log(`Loading Konponent: ${konponentName} -> ${p1}`);
+                    }
                     return this.konponents[p1] ? this.konponents[p1].content : match;
                 });
             }
@@ -158,7 +171,13 @@ class Kon {
         for (const routeName in this.routes) {
             for (const konponentName in this.konponents) {
                 if (this.routes[routeName].content.includes(`>_${konponentName}`)) {
+                    if (debugMode) {
+                        console.log(`Loading Konponent: ${routeName} -> ${konponentName}`);
+                    }
                     this.routes[routeName].content = this.routes[routeName].content.replace(`>_${konponentName}`, this.konponents[konponentName].content);
+                    if (debugMode) {
+                        console.log(`Loading Konponent: ${routeName} -> ${konponentName} -> ${this.routes[routeName].content}`);
+                    }
                 }
             }
         }
