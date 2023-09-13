@@ -125,7 +125,7 @@ about.html
 
 ## How can I contribute?
 
-You can contribute by creating a pull request or an issue on our github page!
+You can contribute by creating a pull request or an issue on our [github page!](https://github.com/samuel-baron/Kon)
 
 ## How can I contact you?  
 
